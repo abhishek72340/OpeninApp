@@ -51,6 +51,8 @@ const Upload = () => {
           },
         ])
       );
+      setSelectedFile(null);
+      fileInputRef.current.value = "";
     } catch (error) {
       console.log(error);
     } finally {
