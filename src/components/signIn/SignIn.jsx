@@ -40,7 +40,7 @@ const SignIn = () => {
             name="email"
             value={signInData.email}
             onChange={inputHandler}
-            placeholder="johndoe@gmail.com"
+            placeholder="email"
             required
           />
           <label htmlFor="password">Password</label>
@@ -49,7 +49,7 @@ const SignIn = () => {
             name="password"
             value={signInData.password}
             onChange={inputHandler}
-            placeholder="#@72pass"
+            placeholder="password"
             required
           />
           <p>Forgot password</p>

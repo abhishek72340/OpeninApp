@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Auth from "./pages/auth/Auth";
 import Upload from "./pages/upload/Upload";
 import RequireAuth from "./components/requiredAuth/RequiredAuth";
+
 const App = () => {
   return (
     <div>
