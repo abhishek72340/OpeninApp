@@ -15,7 +15,8 @@ Seamless integration with Cloudinary API for efficient file storage and retrieva
 Local Storage for Excel Files
 
 3.Save Excel files locally using LocalStorage.
-Access and manage Excel files directly within the application for user convenience.
+Access and manage Excel files directly within the application for user convenience.<br/>
+<b>ONLY .CSV FILE ACCESSIBLE</b>
 
 
 <h2>Technologies Used</h2>
