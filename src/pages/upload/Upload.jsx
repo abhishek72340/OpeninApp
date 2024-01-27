@@ -1,18 +1,21 @@
 import { useState, useRef, useEffect } from "react";
-import axios from "axios";
+import { MdOutlineFileUpload } from "react-icons/md";
 import { Spinner } from "@chakra-ui/react";
-import "../../styles/uploadStyle/upload.scss";
+import axios from "axios";
 import SideBar from "../../components/sideBar/SideBar";
 import Navbar from "../../components/navbar/Navbar";
-import { MdOutlineFileUpload } from "react-icons/md";
 import excelIcon from "../../../public/image/excel-icon.png";
+import "../../styles/uploadStyle/upload.scss";
+
+const CLOUD_NAME = "dmldp9xj4";
+const UPLOAD_PRESET = "OpeninApp";
+
 const Upload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadedFile, setUploadedFile] = useState([]);
   const [isMediaUploading, setIsMediaUploading] = useState(false);
   const [selectedTag, setSelectedTag] = useState([]);
   const [selectInput, setSelectInput] = useState("");
-  // *******************************************************
 
   useEffect(() => {
     const uploadedFiles = localStorage.getItem("uploadedFiles");
@@ -25,41 +28,36 @@ const Upload = () => {
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
-      formData.append("upload_preset", "OpeninApp");
-      formData.append("cloud_name", "dmldp9xj4");
+      formData.append("upload_preset", UPLOAD_PRESET);
+      formData.append("cloud_name", CLOUD_NAME);
 
       const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/dmldp9xj4/auto/upload",
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,
         formData
       );
-      console.log("Public URL:", response);
+
       setUploadedFile((prev) => [
         ...prev,
-        {
-          src: response.data.secure_url,
-          prefix: "prefixsample",
-        },
+        { src: response.data.secure_url, prefix: "prefixsample" },
       ]);
 
       localStorage.setItem(
         "uploadedFiles",
         JSON.stringify([
           ...uploadedFile,
-          {
-            src: response.data.secure_url,
-            prefix: "prefixsample",
-          },
+          { src: response.data.secure_url, prefix: "prefixsample" },
         ])
       );
+
       setSelectedFile(null);
       fileInputRef.current.value = "";
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setIsMediaUploading(false);
     }
   };
-  // ******************************************************
+
   const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
@@ -93,7 +91,6 @@ const Upload = () => {
   const remove = (id) => {
     const filterItem = selectedTag.filter((_, idx) => idx !== id);
     setSelectedTag(filterItem);
-    console.log("fil", filterItem);
   };
 
   return (
@@ -109,16 +106,7 @@ const Upload = () => {
           }
         >
           <form className="upload_file_form" onSubmit={submitFileHandler}>
-            {/* **************************************************************** */}
-            <div
-              style={{
-                position: "absolute",
-                marginTop: "-5rem",
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-              }}
-            >
+            <div className="file_uploaded_form_with_upload_btn">
               <img
                 src={excelIcon}
                 alt="excelIcon"
@@ -145,7 +133,6 @@ const Upload = () => {
                 )}
               </div>
             </div>
-            {/* ***************************************************** */}
             <label htmlFor="file"></label>
             <input
               type="file"
@@ -153,7 +140,7 @@ const Upload = () => {
               accept=".csv"
               ref={fileInputRef}
               onChange={handleFileChange}
-            />{" "}
+            />
             <button type="submit" disabled={!selectedFile}>
               {!isMediaUploading ? (
                 <div className="uploaded_icon_text_container">
@@ -162,7 +149,7 @@ const Upload = () => {
                 </div>
               ) : (
                 <Spinner id="spinner" />
-              )}{" "}
+              )}
             </button>
           </form>
         </div>
@@ -198,21 +185,19 @@ const Upload = () => {
                     <option value="Tag4">Tag4</option>
                   </select>
                   <span>
-                    {selectedTag.map((item, tagIndex) => {
-                      return (
-                        <span key={item} style={{ padding: "2px" }}>
-                          <span id="selected_tag_design">
-                            {item}
-                            <span
-                              className="remove_tag_button"
-                              onClick={() => remove(tagIndex)}
-                            >
-                              x
-                            </span>
+                    {selectedTag.map((item, tagIndex) => (
+                      <span key={item} style={{ padding: "2px" }}>
+                        <span id="selected_tag_design">
+                          {item}
+                          <span
+                            className="remove_tag_button"
+                            onClick={() => remove(tagIndex)}
+                          >
+                            x
                           </span>
                         </span>
-                      );
-                    })}
+                      </span>
+                    ))}
                   </span>
                 </div>
               ))}

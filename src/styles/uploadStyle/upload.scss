@@ -28,6 +28,13 @@
     align-items: center;
   }
 }
+.file_uploaded_form_with_upload_btn {
+  position: absolute;
+  margin-top: -5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 #browse {
   color: blue;
   cursor: pointer;
