@@ -182,7 +182,11 @@ const Upload = () => {
                     <a href={fileObj.src}>{fileObj.src}</a>
                   </div>
                   <span className="prefix_text">{fileObj.prefix}</span>
-                  <select value={selectInput} onChange={selectHandler}>
+                  <select
+                    value={selectInput}
+                    onChange={selectHandler}
+                    className="drop_down"
+                  >
                     <option value="">Select Tags</option>
                     <option value="Tag1">Tag1</option>
                     <option value="Tag2">Tag2</option>

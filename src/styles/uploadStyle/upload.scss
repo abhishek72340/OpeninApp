@@ -136,6 +136,15 @@ button[type="submit"]:disabled {
   margin-left: 5px;
   cursor: pointer;
 }
+.drop_down {
+  outline: none;
+  border: 1px solid lightgray;
+  font-size: 0.8rem;
+  width: 6rem;
+  height: 1.5rem;
+  text-align: center;
+  border-radius: 5px;
+}
 #selected_tag_design {
   background-color: #605bff;
   color: white;
