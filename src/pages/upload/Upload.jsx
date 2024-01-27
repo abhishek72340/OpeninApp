@@ -98,11 +98,11 @@ const Upload = () => {
       <Navbar />
       <div className="uploaded_file_map_data_container">
         <div
-          className="input_file_container"
-          style={{
-            marginLeft: !uploadedFile.length ? "7.9rem" : "",
-            marginTop: !uploadedFile.length ? "-13rem" : "",
-          }}
+          className={
+            !uploadedFile.length
+              ? "without_file_input_file_container"
+              : "input_file_container"
+          }
         >
           <form className="upload_file_form" onSubmit={submitFileHandler}>
             {/* **************************************************************** */}

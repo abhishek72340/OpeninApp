@@ -4,6 +4,10 @@
   align-items: center;
   margin-left: -0.1rem;
 }
+.without_file_input_file_container {
+  margin-left: 7.9rem;
+  margin-top: -13rem;
+}
 .upload_file_form {
   background-color: #fff;
   height: 35vh;
@@ -157,5 +161,12 @@ button[type="submit"]:disabled {
 
   .map_uploaded_file_container {
     overflow-x: auto;
+  }
+  .without_file_input_file_container {
+    margin-left: 0rem;
+    margin-top: 0rem;
+    position: absolute;
+    left: 5%;
+    top: 15%;
   }
 }
