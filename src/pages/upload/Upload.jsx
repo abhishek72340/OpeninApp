@@ -84,7 +84,7 @@ const Upload = () => {
 
   const selectHandler = (e) => {
     setSelectInput(e.target.value);
-    setSelectedTag([...selectedTag, selectInput]);
+    setSelectedTag((prev) => [...prev, selectInput]);
   };
 
   const remove = (id) => {
@@ -157,13 +157,7 @@ const Upload = () => {
                   <span>Upload</span>
                 </div>
               ) : (
-                <Spinner
-                  style={{
-                    fontSize: "4rem",
-                    height: "1.2rem",
-                    width: "1.2rem",
-                  }}
-                />
+                <Spinner id="spinner" />
               )}{" "}
             </button>
           </form>
@@ -177,7 +171,7 @@ const Upload = () => {
               <div id="map_data_heading">
                 <span>Sl No.</span>
                 <span>Link</span>
-                <span style={{ marginLeft: "4rem" }}>Prefix</span>
+                <span>Prefix</span>
                 <span>Add Tags</span>
                 <span>Selected Tags</span>
               </div>
@@ -189,21 +183,21 @@ const Upload = () => {
                   </div>
                   <span className="prefix_text">{fileObj.prefix}</span>
                   <select value={selectInput} onChange={selectHandler}>
-                    <option value="">selected</option>
+                    <option value="">Select Tags</option>
                     <option value="Tag1">Tag1</option>
                     <option value="Tag2">Tag2</option>
                     <option value="Tag3">Tag3</option>
                     <option value="Tag4">Tag4</option>
                   </select>
                   <span>
-                    {selectedTag.map((item, index) => {
+                    {selectedTag.map((item, tagIndex) => {
                       return (
                         <span key={item} style={{ padding: "2px" }}>
                           <span id="selected_tag_design">
                             {item}
                             <span
-                              style={{ marginLeft: "5px", cursor: "pointer" }}
-                              onClick={() => remove(index)}
+                              className="remove_tag_button"
+                              onClick={() => remove(tagIndex)}
                             >
                               x
                             </span>

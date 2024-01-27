@@ -20,7 +20,7 @@ const SignIn = () => {
       localStorage.setItem("token", JSON.stringify(signInData));
       navigate("/upload");
     } else {
-      console.log("");
+      alert("please enter credential");
     }
   };
 
@@ -41,7 +41,6 @@ const SignIn = () => {
             value={signInData.email}
             onChange={inputHandler}
             placeholder="email"
-            required
           />
           <label htmlFor="password">Password</label>
           <input
@@ -50,7 +49,6 @@ const SignIn = () => {
             value={signInData.password}
             onChange={inputHandler}
             placeholder="password"
-            required
           />
           <p>Forgot password</p>
           <input type="submit" value="Sign In" />
