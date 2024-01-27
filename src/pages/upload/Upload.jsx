@@ -1,26 +1,26 @@
 import { useState, useRef, useEffect } from "react";
-import { MdOutlineFileUpload } from "react-icons/md";
-import { Spinner } from "@chakra-ui/react";
 import axios from "axios";
+import { Spinner } from "@chakra-ui/react";
+import "../../styles/uploadStyle/upload.scss";
 import SideBar from "../../components/sideBar/SideBar";
 import Navbar from "../../components/navbar/Navbar";
+import { MdOutlineFileUpload } from "react-icons/md";
 import excelIcon from "../../../public/image/excel-icon.png";
-import "../../styles/uploadStyle/upload.scss";
 
 const CLOUD_NAME = "dmldp9xj4";
 const UPLOAD_PRESET = "OpeninApp";
-
 const Upload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [uploadedFile, setUploadedFile] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isMediaUploading, setIsMediaUploading] = useState(false);
-  const [selectedTag, setSelectedTag] = useState([]);
-  const [selectInput, setSelectInput] = useState("");
+  const [fileTags, setFileTags] = useState([]);
+
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
-    const uploadedFiles = localStorage.getItem("uploadedFiles");
-    if (uploadedFiles) {
-      setUploadedFile(JSON.parse(uploadedFiles));
+    const storedFiles = localStorage.getItem("uploadedFiles");
+    if (storedFiles) {
+      setUploadedFiles(JSON.parse(storedFiles));
     }
   }, []);
 
@@ -36,16 +36,24 @@ const Upload = () => {
         formData
       );
 
-      setUploadedFile((prev) => [
-        ...prev,
-        { src: response.data.secure_url, prefix: "prefixsample" },
+      setUploadedFiles((prevFiles) => [
+        ...prevFiles,
+        {
+          src: response.data.secure_url,
+          prefix: "prefixsample",
+          tags: [],
+        },
       ]);
 
       localStorage.setItem(
         "uploadedFiles",
         JSON.stringify([
-          ...uploadedFile,
-          { src: response.data.secure_url, prefix: "prefixsample" },
+          ...uploadedFiles,
+          {
+            src: response.data.secure_url,
+            prefix: "prefixsample",
+            tags: [],
+          },
         ])
       );
 
@@ -57,8 +65,6 @@ const Upload = () => {
       setIsMediaUploading(false);
     }
   };
-
-  const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -72,25 +78,28 @@ const Upload = () => {
     handleMediaUpload(selectedFile);
   };
 
-  const handleRemoveClick = () => {
-    setSelectedFile("");
-  };
-
-  const chooseFileHandler = () => {
-    fileInputRef.current.click();
-  };
-
-  const selectHandler = (e) => {
+  const selectHandler = (fileIndex, e) => {
     const selectedValue = e.target.value;
     if (selectedValue !== "Select Tags") {
-      setSelectInput(selectedValue);
-      setSelectedTag((prev) => [...prev, selectedValue]);
+      setFileTags((prevTags) => {
+        const updatedTags = [...prevTags];
+        updatedTags[fileIndex] = [
+          ...(updatedTags[fileIndex] || []),
+          selectedValue,
+        ];
+        return updatedTags;
+      });
     }
   };
 
-  const remove = (id) => {
-    const filterItem = selectedTag.filter((_, idx) => idx !== id);
-    setSelectedTag(filterItem);
+  const removeTag = (fileIndex, tagIndex) => {
+    setFileTags((prevTags) => {
+      const updatedTags = [...prevTags];
+      updatedTags[fileIndex] = updatedTags[fileIndex].filter(
+        (_, idx) => idx !== tagIndex
+      );
+      return updatedTags;
+    });
   };
 
   return (
@@ -100,13 +109,21 @@ const Upload = () => {
       <div className="uploaded_file_map_data_container">
         <div
           className={
-            !uploadedFile.length
+            !uploadedFiles.length
               ? "without_file_input_file_container"
               : "input_file_container"
           }
         >
           <form className="upload_file_form" onSubmit={submitFileHandler}>
-            <div className="file_uploaded_form_with_upload_btn">
+            <div
+              style={{
+                position: "absolute",
+                marginTop: "-5rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
               <img
                 src={excelIcon}
                 alt="excelIcon"
@@ -119,14 +136,20 @@ const Upload = () => {
                 {selectedFile ? (
                   <span className="file_type">
                     {selectedFile.name} {selectedFile.type}
-                    <div className="remove_button" onClick={handleRemoveClick}>
+                    <div
+                      className="remove_button"
+                      onClick={() => setSelectedFile("")}
+                    >
                       Remove
                     </div>
                   </span>
                 ) : (
                   <div>
                     drop your excel here or{" "}
-                    <span id="browse" onClick={chooseFileHandler}>
+                    <span
+                      id="browse"
+                      onClick={() => fileInputRef.current.click()}
+                    >
                       browse
                     </span>
                   </div>
@@ -154,9 +177,9 @@ const Upload = () => {
           </form>
         </div>
         <div id="upload_heading_text">
-          {uploadedFile.length ? "Uploads" : null}
+          {uploadedFiles.length ? "Uploads" : null}
         </div>
-        {uploadedFile.length ? (
+        {uploadedFiles.length ? (
           <div className="mapping_file_container">
             <div className="map_uploaded_file_container">
               <div id="map_data_heading">
@@ -166,7 +189,7 @@ const Upload = () => {
                 <span>Add Tags</span>
                 <span>Selected Tags</span>
               </div>
-              {uploadedFile.map((fileObj, index) => (
+              {uploadedFiles.map((fileObj, index) => (
                 <div className="file_link_tag_container" key={fileObj.src}>
                   <span>{index + 1}</span>
                   <div className="uploaded_file_link">
@@ -175,8 +198,8 @@ const Upload = () => {
                   <span className="prefix_text">{fileObj.prefix}</span>
                   <select
                     className="drop_down"
-                    value={selectInput}
-                    onChange={selectHandler}
+                    value={fileTags[index] ? fileTags[index] : "Select Tags"}
+                    onChange={(e) => selectHandler(index, e)}
                   >
                     <option>Select Tags</option>
                     <option value="Tag1">Tag1</option>
@@ -185,19 +208,20 @@ const Upload = () => {
                     <option value="Tag4">Tag4</option>
                   </select>
                   <span>
-                    {selectedTag.map((item, tagIndex) => (
-                      <span key={item} style={{ padding: "2px" }}>
-                        <span id="selected_tag_design">
-                          {item}
-                          <span
-                            className="remove_tag_button"
-                            onClick={() => remove(tagIndex)}
-                          >
-                            x
+                    {fileTags[index] &&
+                      fileTags[index].map((item, tagIndex) => (
+                        <span key={item} style={{ padding: "2px" }}>
+                          <span id="selected_tag_design">
+                            {item}
+                            <span
+                              className="remove_tag_button"
+                              onClick={() => removeTag(index, tagIndex)}
+                            >
+                              x
+                            </span>
                           </span>
                         </span>
-                      </span>
-                    ))}
+                      ))}
                   </span>
                 </div>
               ))}
