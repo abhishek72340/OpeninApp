@@ -83,13 +83,17 @@ const Upload = () => {
   };
 
   const selectHandler = (e) => {
-    setSelectInput(e.target.value);
-    setSelectedTag((prev) => [...prev, selectInput]);
+    const selectedValue = e.target.value;
+    if (selectedValue !== "Select Tags") {
+      setSelectInput(selectedValue);
+      setSelectedTag((prev) => [...prev, selectedValue]);
+    }
   };
 
   const remove = (id) => {
     const filterItem = selectedTag.filter((_, idx) => idx !== id);
     setSelectedTag(filterItem);
+    console.log("fil", filterItem);
   };
 
   return (
@@ -183,11 +187,11 @@ const Upload = () => {
                   </div>
                   <span className="prefix_text">{fileObj.prefix}</span>
                   <select
+                    className="drop_down"
                     value={selectInput}
                     onChange={selectHandler}
-                    className="drop_down"
                   >
-                    <option value="">Select Tags</option>
+                    <option>Select Tags</option>
                     <option value="Tag1">Tag1</option>
                     <option value="Tag2">Tag2</option>
                     <option value="Tag3">Tag3</option>
